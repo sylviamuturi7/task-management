@@ -96,17 +96,24 @@ def view_progress():
     print("\n--- Task Progress ---")
     progress = calculate_progress()
     
-    print(f"Total tasks: {progress['total_tasks']}")
-    print(f"Completed tasks: {progress['completed_tasks']}")
-    print(f"Pending tasks: {progress['pending_tasks']}")
-    print(f"Completion rate: {progress['completion_percentage']}%")
+    # Get detailed stats for display
+    from task_manager.task_utils import get_tasks
+    all_tasks = get_tasks()
+    total_tasks = len(all_tasks)
+    completed_tasks = sum(1 for task in all_tasks if task["completed"])
+    pending_tasks = total_tasks - completed_tasks
     
-    if progress['total_tasks'] > 0:
+    print(f"Total tasks: {total_tasks}")
+    print(f"Completed tasks: {completed_tasks}")
+    print(f"Pending tasks: {pending_tasks}")
+    print(f"Completion rate: {progress}%")
+    
+    if total_tasks > 0:
         bar_length = 20
-        filled_length = int(progress['completion_percentage'] / 5)
+        filled_length = int(progress / 5)
         bar = '█' * filled_length + '░' * (bar_length - filled_length)
         print(f"\nProgress: {bar}")
-        print(f"         {progress['completion_percentage']}%")
+        print(f"         {progress}%")
 
 
 def main():

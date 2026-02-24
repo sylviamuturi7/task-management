@@ -76,28 +76,20 @@ def view_pending_tasks():
     return pending_tasks
 
 
-def calculate_progress():
+def calculate_progress(tasks_list=None):
     # Calculate and return the progress of task completion
-    total_tasks = len(tasks)
+    if tasks_list is None:
+        tasks_list = tasks
+    
+    total_tasks = len(tasks_list)
     
     if total_tasks == 0:
-        return {
-            "total_tasks": 0,
-            "completed_tasks": 0,
-            "pending_tasks": 0,
-            "completion_percentage": 0.0
-        }
+        return 0.0
     
-    completed_tasks = sum(1 for task in tasks if task["completed"])
-    pending_tasks = total_tasks - completed_tasks
+    completed_tasks = sum(1 for task in tasks_list if task["completed"])
     completion_percentage = (completed_tasks / total_tasks) * 100
     
-    return {
-        "total_tasks": total_tasks,
-        "completed_tasks": completed_tasks,
-        "pending_tasks": pending_tasks,
-        "completion_percentage": round(completion_percentage, 2)
-    }
+    return round(completion_percentage, 2)
 
 
 def view_all_tasks():

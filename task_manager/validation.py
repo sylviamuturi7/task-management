@@ -60,14 +60,7 @@ def validate_due_date(due_date):
         # Try to parse the date
         parsed_date = datetime.strptime(due_date, "%Y-%m-%d").date()
         
-        # Check if date is not in the past (allow today for testing)
-        current_date = datetime.now().date()
-        if parsed_date < current_date:
-            print("Error: Due date cannot be in the past.")
-            print(f"  Current date: {current_date}")
-            print(f"  Due date: {parsed_date}")
-            return False
-        
+        # Accept any valid date format (no past date restriction)
         return True
         
     except ValueError:
