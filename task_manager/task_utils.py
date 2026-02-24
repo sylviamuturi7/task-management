@@ -25,7 +25,7 @@ def add_task(title, description, due_date):
     
     # Add to tasks list
     tasks.append(task)
-    print(f"Task '{title}' added successfully!")
+    print("Task added successfully!")
     return True
 
 
