@@ -44,7 +44,7 @@ def mark_task_as_complete(task_index):
         return False
     
     tasks[task_index]["completed"] = True
-    print(f"Task '{tasks[task_index]['title']}' marked as complete!")
+    print("Task marked as complete!")
     return True
 
 

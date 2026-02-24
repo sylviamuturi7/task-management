@@ -1,68 +1,68 @@
-def validate_task_description(description):
-    """
-    Validate task description to ensure it's not empty and has reasonable length.
-    
-    Args:
-        description (str): The task description to validate
-        
-    Returns:
-        bool: True if valid, False otherwise
-    """
-    if not description:
+from datetime import datetime
+
+def validate_task_title(title):
+    # Validate task title to ensure it's not empty and has reasonable length
+    if not title:
+        print("Error: Task title cannot be empty.")
         return False
     
-    if not isinstance(description, str):
+    if not isinstance(title, str):
+        print("Error: Task title must be text.")
         return False
     
-    # Check if description has at least 3 characters
-    if len(description.strip()) < 3:
+    # Check if title has at least 3 characters
+    if len(title.strip()) < 3:
+        print("Error: Task title must be at least 3 characters long.")
         return False
     
-    # Check if description is not too long (max 200 characters)
-    if len(description) > 200:
+    # Check if title is not too long (max 100 characters)
+    if len(title) > 100:
+        print("Error: Task title cannot exceed 100 characters.")
         return False
     
     return True
 
 
-def validate_task_priority(priority):
-    """
-    Validate task priority to ensure it's one of the accepted values.
-    
-    Args:
-        priority (str): The task priority to validate
-        
-    Returns:
-        bool: True if valid, False otherwise
-    """
-    valid_priorities = ['low', 'medium', 'high']
-    
-    if not isinstance(priority, str):
+def validate_task_description(description):
+    # Validate task description to ensure it's not empty and has reasonable length
+    if not description:
+        print("Error: Task description cannot be empty.")
         return False
     
-    return priority.lower() in valid_priorities
+    if not isinstance(description, str):
+        print("Error: Task description must be text.")
+        return False
+    
+    # Check if description has at least 5 characters
+    if len(description.strip()) < 5:
+        print("Error: Task description must be at least 5 characters long.")
+        return False
+    
+    # Check if description is not too long (max 500 characters)
+    if len(description) > 500:
+        print("Error: Task description cannot exceed 500 characters.")
+        return False
+    
+    return True
 
 
-def validate_task_id(task_id, tasks):
-    """
-    Validate task ID to ensure it exists in the tasks list.
+def validate_due_date(due_date):
+    # Validate due date to ensure it's in proper format and not in the past
+    if not due_date:
+        print("Error: Due date cannot be empty.")
+        return False
     
-    Args:
-        task_id (int): The task ID to validate
-        tasks (list): List of task dictionaries
+    if not isinstance(due_date, str):
+        print("Error: Due date must be text.")
+        return False
+    
+    try:
+        # Try to parse the date
+        parsed_date = datetime.strptime(due_date, "%Y-%m-%d").date()
         
-    Returns:
-        bool: True if valid, False otherwise
-    """
-    if not isinstance(task_id, int):
+        # Accept any valid date format (no past date restriction)
+        return True
+        
+    except ValueError:
+        print("Error: Due date must be in YYYY-MM-DD format.")
         return False
-    
-    if task_id < 0:
-        return False
-    
-    # Check if task ID exists in the tasks list
-    for task in tasks:
-        if task.get('id') == task_id:
-            return True
-    
-    return False

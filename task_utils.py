@@ -1,180 +1,116 @@
-from validation import validate_task_description, validate_task_priority, validate_task_id
-import datetime
+from .validation import validate_task_title, validate_task_description, validate_due_date
 
-def create_task(description, priority='medium'):
-    
-    # Args:
-    #     description (str): Task description
-    #     priority (str): Task priority ('low', 'medium', 'high')
-    #
-    # Returns:
-    #     dict: Task dictionary or None if validation fails
-    # Validate inputs
-    if not validate_task_description(description):
-        print("Error: Invalid task description. Must be at least 3 characters and max 200 characters.")
-        return None
-    
-    if not validate_task_priority(priority):
-        print("Error: Invalid priority. Must be 'low', 'medium', or 'high'.")
-        return None
-    
-    # Create task dictionary
-    task = {
-        'id': None,  # Will be set when added to tasks list
-        'description': description.strip(),
-        'priority': priority.lower(),
-        'completed': False,
-        'created_date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'completed_date': None
-    }
-    
-    return task
+# Global list to store tasks
+tasks = []
 
-
-def add_task(tasks, description, priority='medium'):
-    # Add a new task to the tasks list.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #     description (str): Task description
-    #     priority (str): Task priority
-    #
-    # Returns:
-    #     bool: True if task added successfully, False otherwise
-    # Create new task
-    new_task = create_task(description, priority)
-    
-    if new_task is None:
+def add_task(title, description, due_date):
+    # Add a new task to the tasks list after validation
+    # Validate all inputs
+    if not validate_task_title(title):
         return False
     
-    # Assign ID (incremental)
-    if tasks:
-        max_id = max(task.get('id', 0) for task in tasks)
-        new_task['id'] = max_id + 1
-    else:
-        new_task['id'] = 1
+    if not validate_task_description(description):
+        return False
+    
+    if not validate_due_date(due_date):
+        return False
+    
+    # Create task dictionary with specified structure
+    task = {
+        "title": title.strip(),
+        "description": description.strip(),
+        "due_date": due_date,
+        "completed": False
+    }
     
     # Add to tasks list
-    tasks.append(new_task)
+    tasks.append(task)
+    print("Task added successfully!")
     return True
 
 
-def mark_task_complete(tasks, task_id):
-    # Mark a task as complete.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #     task_id (int): ID of task to mark complete
-    #
-    # Returns:
-    #     bool: True if task marked complete successfully, False otherwise
-    # Validate task ID
-    if not validate_task_id(task_id, tasks):
-        print(f"Error: Task with ID {task_id} not found.")
+def mark_task_as_complete(task_index):
+    # Mark a task as complete by its index
+    if not isinstance(task_index, int):
+        print("Error: Please enter a valid number for task index.")
         return False
     
-    # Find and update task
-    for task in tasks:
-        if task.get('id') == task_id:
-            if task.get('completed', False):
-                print(f"Task {task_id} is already completed.")
-                return False
-            
-            task['completed'] = True
-            task['completed_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            return True
+    if task_index < 0 or task_index >= len(tasks):
+        print(f"Error: Task index {task_index} is out of range. Valid range: 0-{len(tasks)-1}")
+        return False
     
-    return False
+    if tasks[task_index]["completed"]:
+        print(f"Task '{tasks[task_index]['title']}' is already completed.")
+        return False
+    
+    tasks[task_index]["completed"] = True
+    print("Task marked as complete!")
+    return True
 
 
-def get_pending_tasks(tasks):
-    # Get list of pending (incomplete) tasks.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #
-    # Returns:
-    #     list: List of pending task dictionaries
+def view_pending_tasks():
+    # Display all pending (incomplete) tasks
     pending_tasks = []
     
-    for task in tasks:
-        if not task.get('completed', False):
+    print("\n--- PENDING TASKS ---")
+    
+    if not tasks:
+        print("No tasks found.")
+        return pending_tasks
+    
+    found_pending = False
+    
+    for i, task in enumerate(tasks):
+        if not task["completed"]:
             pending_tasks.append(task)
+            status = "○" if not task["completed"] else "✓"
+            print(f"[{i}] {status} {task['title']}")
+            print(f"    Description: {task['description']}")
+            print(f"    Due Date: {task['due_date']}")
+            print()
+            found_pending = True
+    
+    if not found_pending:
+        print("No pending tasks found.")
     
     return pending_tasks
 
 
-def get_completed_tasks(tasks):
-    # Get list of completed tasks.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #
-    # Returns:
-    #     list: List of completed task dictionaries
-    completed_tasks = []
+def calculate_progress(tasks_list=None):
+    # Calculate and return the progress of task completion
+    if tasks_list is None:
+        tasks_list = tasks
     
-    for task in tasks:
-        if task.get('completed', False):
-            completed_tasks.append(task)
+    total_tasks = len(tasks_list)
     
-    return completed_tasks
+    if total_tasks == 0:
+        return 0.0
+    
+    completed_tasks = sum(1 for task in tasks_list if task["completed"])
+    completion_percentage = (completed_tasks / total_tasks) * 100
+    
+    return round(completion_percentage, 2)
 
 
-def display_tasks(tasks, show_completed=False):
-    # Display tasks in a formatted way.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #     show_completed (bool): Whether to show completed tasks
+def view_all_tasks():
+    # Display all tasks with their completion status
+    print("\n--- ALL TASKS ---")
+    
     if not tasks:
-        print("No tasks to display.")
-        return
+        print("No tasks found.")
+        return tasks
     
-    print("\n" + "="*60)
-    if show_completed:
-        print("COMPLETED TASKS")
-    else:
-        print("PENDING TASKS")
-    print("="*60)
+    for i, task in enumerate(tasks):
+        status = "✓" if task["completed"] else "○"
+        completion_status = "Completed" if task["completed"] else "Pending"
+        print(f"[{i}] {status} {task['title']} ({completion_status})")
+        print(f"    Description: {task['description']}")
+        print(f"    Due Date: {task['due_date']}")
+        print()
     
-    for task in tasks:
-        status = "✓" if task.get('completed', False) else "○"
-        priority = task.get('priority', 'medium').upper()
-        description = task.get('description', 'No description')
-        task_id = task.get('id', 'N/A')
-        
-        print(f"[{task_id}] {status} [{priority}] {description}")
-        
-        if task.get('completed', False) and task.get('completed_date'):
-            print(f"    Completed: {task['completed_date']}")
-        elif task.get('created_date'):
-            print(f"    Created: {task['created_date']}")
-    
-    print("="*60)
+    return tasks
 
 
-def get_task_stats(tasks):
-    # Get task statistics.
-    #
-    # Args:
-    #     tasks (list): List of task dictionaries
-    #
-    # Returns:
-    #     dict: Dictionary with task statistics
-    total_tasks = len(tasks)
-    completed_count = len(get_completed_tasks(tasks))
-    pending_count = len(get_pending_tasks(tasks))
-    
-    completion_rate = 0
-    if total_tasks > 0:
-        completion_rate = (completed_count / total_tasks) * 100
-    
-    stats = {
-        'total_tasks': total_tasks,
-        'completed_tasks': completed_count,
-        'pending_tasks': pending_count,
-        'completion_rate': round(completion_rate, 2)
-    }
-    
-    return stats
+def get_tasks():
+    # Get the list of all tasks
+    return tasks
