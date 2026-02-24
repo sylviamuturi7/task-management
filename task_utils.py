@@ -2,16 +2,13 @@ from validation import validate_task_description, validate_task_priority, valida
 import datetime
 
 def create_task(description, priority='medium'):
-    """
-    Create a new task dictionary with proper structure.
     
-    Args:
-        description (str): Task description
-        priority (str): Task priority ('low', 'medium', 'high')
-        
-    Returns:
-        dict: Task dictionary or None if validation fails
-    """
+    # Args:
+    #     description (str): Task description
+    #     priority (str): Task priority ('low', 'medium', 'high')
+    #
+    # Returns:
+    #     dict: Task dictionary or None if validation fails
     # Validate inputs
     if not validate_task_description(description):
         print("Error: Invalid task description. Must be at least 3 characters and max 200 characters.")
@@ -35,17 +32,15 @@ def create_task(description, priority='medium'):
 
 
 def add_task(tasks, description, priority='medium'):
-    """
-    Add a new task to the tasks list.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        description (str): Task description
-        priority (str): Task priority
-        
-    Returns:
-        bool: True if task added successfully, False otherwise
-    """
+    # Add a new task to the tasks list.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #     description (str): Task description
+    #     priority (str): Task priority
+    #
+    # Returns:
+    #     bool: True if task added successfully, False otherwise
     # Create new task
     new_task = create_task(description, priority)
     
@@ -65,16 +60,14 @@ def add_task(tasks, description, priority='medium'):
 
 
 def mark_task_complete(tasks, task_id):
-    """
-    Mark a task as complete.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        task_id (int): ID of task to mark complete
-        
-    Returns:
-        bool: True if task marked complete successfully, False otherwise
-    """
+    # Mark a task as complete.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #     task_id (int): ID of task to mark complete
+    #
+    # Returns:
+    #     bool: True if task marked complete successfully, False otherwise
     # Validate task ID
     if not validate_task_id(task_id, tasks):
         print(f"Error: Task with ID {task_id} not found.")
@@ -95,15 +88,13 @@ def mark_task_complete(tasks, task_id):
 
 
 def get_pending_tasks(tasks):
-    """
-    Get list of pending (incomplete) tasks.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        
-    Returns:
-        list: List of pending task dictionaries
-    """
+    # Get list of pending (incomplete) tasks.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #
+    # Returns:
+    #     list: List of pending task dictionaries
     pending_tasks = []
     
     for task in tasks:
@@ -114,15 +105,13 @@ def get_pending_tasks(tasks):
 
 
 def get_completed_tasks(tasks):
-    """
-    Get list of completed tasks.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        
-    Returns:
-        list: List of completed task dictionaries
-    """
+    # Get list of completed tasks.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #
+    # Returns:
+    #     list: List of completed task dictionaries
     completed_tasks = []
     
     for task in tasks:
@@ -133,13 +122,11 @@ def get_completed_tasks(tasks):
 
 
 def display_tasks(tasks, show_completed=False):
-    """
-    Display tasks in a formatted way.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        show_completed (bool): Whether to show completed tasks
-    """
+    # Display tasks in a formatted way.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #     show_completed (bool): Whether to show completed tasks
     if not tasks:
         print("No tasks to display.")
         return
@@ -168,15 +155,13 @@ def display_tasks(tasks, show_completed=False):
 
 
 def get_task_stats(tasks):
-    """
-    Get task statistics.
-    
-    Args:
-        tasks (list): List of task dictionaries
-        
-    Returns:
-        dict: Dictionary with task statistics
-    """
+    # Get task statistics.
+    #
+    # Args:
+    #     tasks (list): List of task dictionaries
+    #
+    # Returns:
+    #     dict: Dictionary with task statistics
     total_tasks = len(tasks)
     completed_count = len(get_completed_tasks(tasks))
     pending_count = len(get_pending_tasks(tasks))

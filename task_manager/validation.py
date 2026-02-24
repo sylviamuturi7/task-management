@@ -64,6 +64,8 @@ def validate_due_date(due_date):
         current_date = datetime.now().date()
         if parsed_date < current_date:
             print("Error: Due date cannot be in the past.")
+            print(f"  Current date: {current_date}")
+            print(f"  Due date: {parsed_date}")
             return False
         
         return True
